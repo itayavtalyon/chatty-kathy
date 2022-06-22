@@ -1,0 +1,87 @@
+{
+  "name": "chatty-kathy",
+  "version": "1.0.0",
+  "description": "Simple chat room application",
+  "main": "src/server/server.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "Itay Avtalyon <itay@imoogi.com>",
+  "license": "Public Domain",
+  "devDependencies": {
+    "eslint": "^8.18.0",
+    "eslint-config-hardcore": "^24.8.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-compat": "^4.0.2",
+    "eslint-plugin-html": "^6.2.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsdoc": "^39.3.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-sonarjs": "^0.13.0",
+    "eslint-plugin-unicorn": "^42.0.0",
+    "jest": "^28.1.1"
+  },
+  "jshintConfig": {
+    "strict": true,
+    "esversion": 6,
+    "browser": true,
+    "module": true,
+    "bitwise": true,
+    "curly": true,
+    "eqeqeq": true,
+    "forin": true,
+    "freeze": true,
+    "futurehostile": true,
+    "latedef": true,
+    "leanswitch": true,
+    "noarg": true,
+    "nocomma": true,
+    "nonbsp": true,
+    "nonew": true,
+    "noreturnawait": true,
+    "regexpu": true,
+    "singleGroups": true,
+    "trailingcomma": true,
+    "undef": true,
+    "unused": true,
+    "varstmt": true
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es6": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "hardcore",
+      "plugin:sonarjs/recommended",
+      "plugin:compat/recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module"
+    },
+    "ecmaFeatures": {
+      "impliedStrict": true,
+      "modules": true
+    },
+    "rules": {},
+    "plugins": [
+      "html",
+      "sonarjs",
+      "unicorn",
+      "jsdoc",
+      "compat"
+    ]
+  },
+  "dependencies": {
+    "ws": "^8.8.0"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.6",
+    "utf-8-validate": "^5.0.9"
+  }
+}
