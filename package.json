@@ -2,8 +2,9 @@
   "name": "chatty-kathy",
   "version": "1.0.0",
   "description": "Simple chat room application",
-  "main": "src/server/server.js",
+  "main": "src/server/index.js",
   "scripts": {
+    "start": "src/server/index.js",
     "test": "jest"
   },
   "keywords": [],
@@ -26,7 +27,7 @@
   },
   "jshintConfig": {
     "strict": true,
-    "esversion": 6,
+    "esversion": 9,
     "browser": true,
     "module": true,
     "bitwise": true,
@@ -61,7 +62,7 @@
       "plugin:compat/recommended"
     ],
     "parserOptions": {
-      "ecmaVersion": 6,
+      "ecmaVersion": 9,
       "sourceType": "module"
     },
     "ecmaFeatures": {

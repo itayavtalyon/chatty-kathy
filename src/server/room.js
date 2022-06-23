@@ -57,8 +57,16 @@ class Room {
   }
 
   getParticipants() {
-    // eslint-disable-next-line compat/compat
-    return Array.from(this.chatters);
+    const participants = [];
+
+    this.chatters.forEach((chatter) => {
+      participants.push({
+        id: chatter.id,
+        name: chatter.name,
+      });
+    });
+
+    return participants;
   }
 }
 
