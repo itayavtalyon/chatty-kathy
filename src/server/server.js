@@ -5,6 +5,8 @@
 import {WebSocket, WebSocketServer} from "ws";
 import Chatter from './chatter.js';
 import Room from './room.js';
+import * as fs from "fs";
+import * as path from "path";
 
 const Server = {
   httpServer: undefined,
@@ -13,10 +15,34 @@ const Server = {
   rooms: new Map(),
   pingInterval: undefined,
 
-  createHttpServer(engine, port) {
-    this.httpServer = engine.createServer((request, response) => {
+  serveStaticContent(request, response) {
+    let requestedResource = "src/client" + request.url; // todo: tighten security
+    if (requestedResource === "src/client/") {
+      requestedResource += "index.html"; //
+    }
 
+    const extension = path.extname(requestedResource);
+    let mimeType = "application/javascript";
+    if (extension === ".html") {
+      mimeType = "text/html";
+    } else if (extension === ".css") {
+      mimeType = "text/css";
+    }
+
+    fs.readFile(requestedResource, (error, data) => {
+      if (error) {
+        console.log(error);
+        response.writeHead(404);
+        response.end("Not found", "utf-8");
+      } else {
+        response.writeHead(200, {"Content-Type": mimeType, });
+        response.end(data, "utf-8");
+      }
     });
+  },
+
+  createHttpServer(engine, port) {
+    this.httpServer = engine.createServer(this.serveStaticContent);
 
     // Hand over the connection to the Websocket server
     this.httpServer.on("upgrade", (request, socket, head) => {
