@@ -42,15 +42,15 @@ const Server = {
   },
 
   createHttpServer(engine, port) {
-    this.httpServer = engine.createServer(this.serveStaticContent);
+    Server.httpServer = engine.createServer(Server.serveStaticContent);
 
     // Hand over the connection to the Websocket server
-    this.httpServer.on("upgrade", (request, socket, head) => {
-      this.webSocketServer.handleUpgrade(request, socket, head, (websocket) => {
-        this.webSocketServer.emit("connection", websocket, request);
+    Server.httpServer.on("upgrade", (request, socket, head) => {
+      Server.webSocketServer.handleUpgrade(request, socket, head, (websocket) => {
+        Server.webSocketServer.emit("connection", websocket, request);
       })
     })
-    this.httpServer.listen(port);
+    Server.httpServer.listen(port);
   },
 
   createSocketServer(SocketEngine) {
@@ -60,16 +60,16 @@ const Server = {
       SocketEngine = WebSocketServer;
     }
 
-    this.webSocketServer = new SocketEngine({
-      //server: this.httpServer
+    Server.webSocketServer = new SocketEngine({
+      //server: Server.httpServer
       noServer: true,
       clientTracking: true,
     });
-    this.webSocketServer.on('connection', this.handleConnection);
-    this.webSocketServer.on('close', () => {
-      clearInterval(this.pingInterval);
+    Server.webSocketServer.on('connection', Server.handleConnection);
+    Server.webSocketServer.on('close', () => {
+      clearInterval(Server.pingInterval);
     });
-    this.pingInterval = setInterval(this.pingClients, CLIENT_PING_INTERVAL);
+    Server.pingInterval = setInterval(Server.pingClients, CLIENT_PING_INTERVAL);
   },
 
   /**
@@ -77,8 +77,8 @@ const Server = {
    * connection was lost
    */
   pingClients() {
-    if (this.webSocketServer && this.webSocketServer.clients) {
-      this.webSocketServer.clients.forEach(client => {
+    if (Server.webSocketServer && Server.webSocketServer.clients) {
+      Server.webSocketServer.clients.forEach(client => {
         if (client.isAlive) {
           // eslint-disable-next-line no-param-reassign
           client.isAlive = false;
@@ -111,15 +111,15 @@ const Server = {
    */
   handleConnection(socket, request) {
     socket.on('message', (data, isBinary) => {
-      this.handleIncomingMessage(data, isBinary, this);
+      Server.handleIncomingMessage(data, isBinary, socket);
     });
     // eslint-disable-next-line no-param-reassign
     socket.isAlive = true;
     socket.on('pong', () => {
-      this.isAlive = true;
+      socket.isAlive = true;
     });
     socket.on('close', () => {
-      this.getUser().terminate();
+      socket.getUser().terminate();
     });
 
     const user = new Chatter(socket);
@@ -154,8 +154,8 @@ const Server = {
 
         if (0 < userName.length) {
           chatter.name = userName;
-          this.userCounter++;
-          chatter.id = this.userCounter;
+          Server.userCounter++;
+          chatter.id = Server.userCounter;
 
           const response = {
             type: 'hello',
@@ -170,7 +170,7 @@ const Server = {
             }
           };
 
-          this.sendMessageToSocket(response, socket);
+          Server.sendMessageToSocket(response, socket);
         } else {
           const response = {
             type: 'hello',
@@ -180,7 +180,7 @@ const Server = {
             }
           };
 
-          this.sendMessageToSocket(response, socket);
+          Server.sendMessageToSocket(response, socket);
         }
         break;
       /**
@@ -212,7 +212,7 @@ const Server = {
             }
           };
 
-          this.sendMessageToSocket(response, socket);
+          Server.sendMessageToSocket(response, socket);
         } else {
           const response = {
             type: 'hello',
@@ -222,7 +222,7 @@ const Server = {
             }
           };
 
-          this.sendMessageToSocket(response, socket);
+          Server.sendMessageToSocket(response, socket);
         }
         break;
       /**
@@ -234,11 +234,11 @@ const Server = {
           roomName = message.body.room;
         }
         if (0 < roomName.length) {
-          if (!this.rooms.has(roomName)) {
-            this.rooms.add(roomName, new Room(roomName));
+          if (!Server.rooms.has(roomName)) {
+            Server.rooms.add(roomName, new Room(roomName));
           }
 
-          let room = this.rooms.get(roomName);
+          let room = Server.rooms.get(roomName);
           chatter.currentRoom = room;
           room.addChatter(chatter);
 
@@ -261,7 +261,7 @@ const Server = {
             }
           };
 
-          this.sendMessageToSocket(response, socket);
+          Server.sendMessageToSocket(response, socket);
         } else {
           const response = {
             type: 'room',
@@ -271,7 +271,7 @@ const Server = {
             }
           };
 
-          this.sendMessageToSocket(response, socket);
+          Server.sendMessageToSocket(response, socket);
         }
         break;
       /**
@@ -297,8 +297,8 @@ const Server = {
    * @param port {int} The port to have the server listen to
    */
   boot(httpServerFactory, socketEngine, port) {
-    this.createHttpServer(httpServerFactory, port);
-    this.createSocketServer(socketEngine);
+    Server.createHttpServer(httpServerFactory, port);
+    Server.createSocketServer(socketEngine);
   }
 };
 

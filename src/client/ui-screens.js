@@ -43,7 +43,7 @@ class MainScreen {
     const container = div("middle");
     const welcome = header(1, "Welcome!", "fancy");
     const explanationOne = paragraph(
-      "<em>Chatty Kathy</em> is one of the coolest chat room applications around.",
+      "Chatty Kathy is one of the coolest chat room applications around.",
       "fancy"
     );
 

@@ -39,29 +39,29 @@ const kathy = {
    * @param newState {object} The desired modifications
    */
   alterApplicationState(newState) {
-    const oldState = this.state;
+    const oldState = kathy.state;
 
-    this.state = {
-      ...this.state,
+    kathy.state = {
+      ...kathy.state,
       ...newState,
     };
-    this.screen.render(this.state, oldState, this.alterApplicationState);
-    this.performStateBasedActions(this.state, oldState);
+    kathy.screen.render(kathy.state, oldState, kathy.alterApplicationState);
+    kathy.performStateBasedActions(kathy.state, oldState);
   },
 
   performStateBasedActions(currentState, oldState) {
     if (currentState.user.name !== oldState.user.name) {
       // Registering a new user
-      this.handleUserIntroduction();
+      kathy.handleUserIntroduction();
     }
 
     if (currentState.room.id !== oldState.room.id) {
       // Enter a new room
-      this.handleChangingRoom(currentState.room.name);
+      kathy.handleChangingRoom(currentState.room.name);
     }
 
     if (currentState.pendingText.length > 0) {
-      this.handleSendingMessage(currentState.pendingText);
+      kathy.handleSendingMessage(currentState.pendingText);
     }
   },
 
@@ -71,39 +71,39 @@ const kathy = {
    */
   boot() {
     // ui -> update to loading
-    this.socket = new Socket(SOCKET_URI);
-    this.screen = new MainScreen();
+    kathy.socket = new Socket(SOCKET_URI);
+    kathy.screen = new MainScreen();
 
     // Register the application hook callbacks.
-    this.socket.registerHookCallback("_ERROR_", this.handleSocketError);
-    this.socket.registerHookCallback("_CLOSE_", this.handleSocketClosed);
-    this.socket.registerHookCallback("_OPEN_", this.handleSocketOpen);
-    this.socket.registerHookCallback("hello", this.handleServerHello);
-    this.socket.registerHookCallback("room", this.handleEnteringRoom);
-    this.socket.registerHookCallback("message", this.handleMessageReceived);
+    kathy.socket.registerHookCallback("_ERROR_", kathy.handleSocketError);
+    kathy.socket.registerHookCallback("_CLOSE_", kathy.handleSocketClosed);
+    kathy.socket.registerHookCallback("_OPEN_", kathy.handleSocketOpen);
+    kathy.socket.registerHookCallback("hello", kathy.handleServerHello);
+    kathy.socket.registerHookCallback("room", kathy.handleEnteringRoom);
+    kathy.socket.registerHookCallback("message", kathy.handleMessageReceived);
 
-    this.socket.connectToSocket();
+    kathy.socket.connectToSocket();
   },
 
   handleSocketError() {
-    this.alterApplicationState({
+    kathy.alterApplicationState({
       socketState: "error",
     });
-    this.socket.connectToSocket();
+    kathy.socket.connectToSocket();
   },
 
   handleSocketOpen() {
-    this.alterApplicationState({
+    kathy.alterApplicationState({
       socketState: "ready",
     });
 
     // If the socket is open, but we already have a user name and id
     // we are probably recovering from an error, reintroduce the user to the server
-    this.handleUserIntroduction();
+    kathy.handleUserIntroduction();
   },
 
   handleSocketClosed() {
-    this.alterApplicationState({
+    kathy.alterApplicationState({
       socketState: "closed",
     });
   },
@@ -111,14 +111,14 @@ const kathy = {
   handleUserIntroduction() {
     // ui -> update to connection
     const message = {
-      type: this.user.id > 0 ? "reintroduce" : "introduce",
+      type: kathy.state.user.id > 0 ? "reintroduce" : "introduce",
 
       body: {
-        user: this.state.user,
+        user: kathy.state.user,
       },
     };
 
-    this.socket.sendJsonObject(message);
+    kathy.socket.sendJsonObject(message);
   },
 
   /**
@@ -128,8 +128,8 @@ const kathy = {
    */
   handleServerHello(message) {
     if (message.body.success) {
-      this.alterApplicationState({
-        user: { id: message.body.user.id, name: this.state.user.name, },
+      kathy.alterApplicationState({
+        user: { id: message.body.user.id, name: kathy.state.user.name, },
       });
     }
   },
@@ -143,52 +143,53 @@ const kathy = {
       },
     };
 
-    this.socket.sendJsonObject(message);
+    kathy.socket.sendJsonObject(message);
   },
 
   handleEnteringRoom(message) {
     if (message.body.success && message.body.room) {
-      const { roomHistory } = this.state;
+      const { roomHistory } = kathy.state;
 
       roomHistory.push({
         id: message.body.room.id,
         name: message.body.room.name,
       });
-      this.alterApplicationState({ room: message.body.room, roomHistory, });
+      kathy.alterApplicationState({ room: message.body.room, roomHistory, });
     }
   },
 
   handleSendingMessage(text) {
-    this.internalMessageId += 1;
+    kathy.internalMessageId += 1;
 
     const message = {
       type: "message",
 
       body: {
-        user: this.state.user,
+        user: kathy.state.user,
         text,
-        internalId: this.internalMessageId,
+        internalId: kathy.internalMessageId,
       },
     };
 
-    this.socket.sendJsonObject(message);
+    kathy.socket.sendJsonObject(message);
 
     // Add to pending messages
-    const currentRoom = this.state.room;
+    const currentRoom = kathy.state.room;
 
     currentRoom.pendingMessages.push(message.body);
-    this.alterApplicationState({ room: currentRoom, pendingText: "", });
+    kathy.alterApplicationState({ room: currentRoom, pendingText: "", });
   },
 
   handleMessageReceived(message) {
-    const currentRoom = this.state.room;
+    const currentRoom = kathy.state.room;
 
     if (
-      message.body.user.id === this.state.user.id &&
-      message.body.user.name === this.state.user.name
+      message.body.user.id === kathy.state.user.id &&
+      message.body.user.name === kathy.state.user.name
     ) {
       // Remove the message from pending
       currentRoom.pendingMessages = [];
+
       for (const pendingMessage of currentRoom.pendingMessages) {
         if (pendingMessage.internalId !== message.body.internalId) {
           currentRoom.pendingMessages.push(pendingMessage);
@@ -197,7 +198,7 @@ const kathy = {
     }
 
     currentRoom.messageHistory.push(message.body);
-    this.alterApplicationState({ room: currentRoom, });
+    kathy.alterApplicationState({ room: currentRoom, });
   },
 };
 
