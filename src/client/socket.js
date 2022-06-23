@@ -11,6 +11,22 @@ class Socket {
     this.connectToSocket();
   }
 
+  registerHookCallback(messageType, callback) {
+    if (this.hooks.has(messageType)) {
+      this.hooks.get(messageType).push(callback);
+    } else {
+      this.hooks.set(messageType, [callback]);
+    }
+  }
+
+  fireHookCallbacks(message) {
+    if (this.hooks.has(message.type)) {
+      this.hooks.get(message.type).forEach((callback) => {
+        callback(message);
+      });
+    }
+  }
+
   connectToSocket() {
     this.socket = new WebSocket(this.uri);
     this.socket.addEventListener("open", () => {
@@ -41,13 +57,13 @@ class Socket {
         event,
       });
     });
-    this.socket.addEventListener("message", this.handleRawMessage);
+    this.socket.addEventListener("message", this.handleRawMessage.bind(this));
   }
 
   handleRawMessage(event) {
     const rawMessage = event.data;
     const message = JSON.parse(rawMessage);
-
+    
     this.fireHookCallbacks(message);
   }
 
@@ -69,21 +85,7 @@ class Socket {
     this.socket.close();
   }
 
-  registerHookCallback(messageType, callback) {
-    if (this.hooks.has(messageType)) {
-      this.hooks.get(messageType).push(callback);
-    } else {
-      this.hooks.set(messageType, [callback]);
-    }
-  }
 
-  fireHookCallbacks(message) {
-    if (this.hooks.has(message.type)) {
-      this.hooks.get(message.type).forEach((callback) => {
-        callback(message);
-      });
-    }
-  }
 }
 
 export default Socket;
