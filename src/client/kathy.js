@@ -191,17 +191,19 @@ const kathy = {
       message.body.user.id === kathy.state.user.id &&
       message.body.user.name === kathy.state.user.name
     ) {
-      // Remove the message from pending
-      currentRoom.pendingMessages = [];
+      const pendingMessages = [];
 
       for (const pendingMessage of currentRoom.pendingMessages) {
         if (pendingMessage.internalId !== message.body.internalId) {
-          currentRoom.pendingMessages.push(pendingMessage);
+          pendingMessages.push(pendingMessage);
         }
       }
+
+      currentRoom.pendingMessages = pendingMessages;
     }
 
     currentRoom.messageHistory.push(message.body);
+
     kathy.alterApplicationState({ room: currentRoom, });
   },
 };

@@ -257,7 +257,7 @@ function chatHistory(state) {
     const isMine =
       message.user.name === state.user.name &&
       message.user.id === state.user.id;
-    const item = chatMessage(message.text, message.user.name, isMine, true);
+    const item = chatMessage(message.text, message.user.name, isMine, false);
 
     container.append(item);
   }

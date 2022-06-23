@@ -70,3 +70,7 @@ p.spinner-reason {
 .message-pending {
     background-color: dimgrey;
 }
+
+.message-author {
+    font-weight: bolder;
+}
