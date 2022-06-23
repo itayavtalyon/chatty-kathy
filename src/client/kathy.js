@@ -55,11 +55,7 @@ const kathy = {
       kathy.handleUserIntroduction();
     }
 
-    if (
-      currentState.room.id !== oldState.room.id ||
-      (currentState.room.name.length > 0 &&
-        currentState.room.name !== oldState.room.name)
-    ) {
+    if (currentState.room.name !== oldState.room.name) {
       // Enter a new room
       kathy.handleChangingRoom(currentState.room.name);
     }
@@ -153,7 +149,7 @@ const kathy = {
   handleEnteringRoom(message) {
     if (message.body.success && message.body.room) {
       const { roomHistory } = kathy.state;
-
+      
       roomHistory.push({
         id: message.body.room.id,
         name: message.body.room.name,

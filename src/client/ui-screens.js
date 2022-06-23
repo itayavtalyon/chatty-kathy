@@ -91,7 +91,7 @@ class MainScreen {
         "bold"
     );
 
-    const roomInput = roomNameInput(stateChanger);
+    const roomInput = roomNameInput(currentState, stateChanger);
 
     clearNode(this.body);
     this.body.append(container);
@@ -121,7 +121,7 @@ class MainScreen {
     const messageList = chatHistory(currentState);
     const messageInput = chatMessageInput(stateChanger);
 
-    const roomInput = roomNameInput(stateChanger);
+    const roomInput = roomNameInput(currentState, stateChanger);
     const roomList = roomHistory(currentState, stateChanger);
 
     clearNode(this.body);

@@ -150,10 +150,11 @@ function userNameInput(value, isEnabled) {
 
 /**
  * Creates the room name input abd button
+ * @param state {Object} The current application state
  * @param stateChanger {Function} The state altering function
  * @returns {HTMLDivElement}
  */
-function roomNameInput(stateChanger) {
+function roomNameInput(state, stateChanger) {
   const container = div("room-input");
   const editor = textInput(
     "Chat room name, e.g. general, D&D, star-wars",
@@ -161,7 +162,9 @@ function roomNameInput(stateChanger) {
     "room-input-name"
   );
   const goButton = button("GO", "room-input-button", () => {
-    stateChanger({ room: { id: 0, name: editor.value } });
+    if (editor.value.trim() !== state.room.name) {
+      stateChanger({ room: { id: 0, name: editor.value.trim() } });
+    }
   });
 
   container.append(editor, goButton);
@@ -186,7 +189,9 @@ function roomHistory(state, stateChanger) {
 
     item.append(text);
     item.addEventListener("click", () => {
-      stateChanger({ room: { id: 0, name: room.name, }, });
+      if (room.name !== state.room.name) {
+        stateChanger({ room: { id: 0, name: room.name } });
+      }
     });
     list.append(item);
   }
