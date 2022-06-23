@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "Simple chat room application",
   "main": "src/server/index.js",
+  "type": "module",
   "scripts": {
-    "start": "src/server/index.js",
+    "start": "node src/server/index.js",
     "test": "jest"
   },
   "keywords": [],

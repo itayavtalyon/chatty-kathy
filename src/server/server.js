@@ -2,26 +2,42 @@
  * Handles the server setup
  */
 
+import {WebSocket, WebSocketServer} from "ws";
 import Chatter from './chatter.js';
 import Room from './room.js';
 
 const Server = {
   httpServer: undefined,
-  socketServer: undefined,
+  webSocketServer: undefined,
   userCounter: 0,
   rooms: new Map(),
   pingInterval: undefined,
 
   createHttpServer(engine, port) {
-    this.httpServer = engine.createServer();
+    this.httpServer = engine.createServer((request, response) => {
+
+    });
+
+    // Hand over the connection to the Websocket server
+    this.httpServer.on("upgrade", (request, socket, head) => {
+      this.webSocketServer.handleUpgrade(request, socket, head, (websocket) => {
+        this.webSocketServer.emit("connection", websocket, request);
+      })
+    })
     this.httpServer.listen(port);
   },
 
   createSocketServer(SocketEngine) {
-    const CLIENT_PING_INTERVAL = 3000;
+    const CLIENT_PING_INTERVAL = 30000;
+
+    if (!SocketEngine) {
+      SocketEngine = WebSocketServer;
+    }
 
     this.webSocketServer = new SocketEngine({
-      server: this.httpServer
+      //server: this.httpServer
+      noServer: true,
+      clientTracking: true,
     });
     this.webSocketServer.on('connection', this.handleConnection);
     this.webSocketServer.on('close', () => {
@@ -35,15 +51,17 @@ const Server = {
    * connection was lost
    */
   pingClients() {
-    this.webSocketServer.clients.forEach(client => {
-      if (client.isAlive) {
-        // eslint-disable-next-line no-param-reassign
-        client.isAlive = false;
-        client.ping();
-      } else {
-        client.getUser().terminate();
-      }
-    });
+    if (this.webSocketServer && this.webSocketServer.clients) {
+      this.webSocketServer.clients.forEach(client => {
+        if (client.isAlive) {
+          // eslint-disable-next-line no-param-reassign
+          client.isAlive = false;
+          client.ping();
+        } else {
+          client.getUser().terminate();
+        }
+      });
+    }
   },
 
   /**

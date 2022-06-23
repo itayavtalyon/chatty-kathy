@@ -1,8 +1,8 @@
 import Socket from "./socket.js";
-import { MainScreen } from "./ui-screens.js";
+import MainScreen from "./ui-screens.js";
 
 const SOCKET_PORT = 3000;
-const SOCKET_URI = `ws://localhost:${SOCKET_PORT}`;
+const SOCKET_URI = `ws://localhost:${SOCKET_PORT}/chat`;
 
 const kathy = {
   socket: undefined,

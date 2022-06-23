@@ -9,45 +9,12 @@ import {
   userNameInput,
   roomNameInput,
   roomHistory,
-  chatMessage,
   chatMessageInput,
   chatHistory,
   spinner,
   paragraph,
   button,
 } from "./ui-blocks.js";
-
-/**
- * Renders the welcome screen
- */
-function renderWelcomeScreen() {
-  const body = document.querySelector("body");
-  const container = div("welcome-container");
-  const welcome = header(1, "Welcome!", "fancy");
-  const explanationOne = paragraph(
-    "<em>Chatty Kathy</em> is one of the coolest chat room applications around.",
-    "fancy"
-  );
-  const explanationTwo = paragraph(
-    "To get started, please introduce yourself.",
-    "fancy"
-  );
-  const userNameField = userNameInput();
-  const sendButton = button("Get Talking", "big", () => {});
-
-  container.append(welcome);
-  container.append(explanationOne, explanationTwo);
-  container.append(userNameField);
-
-  container.render = (currentState, oldState) => {};
-
-  activeScreenElement = container;
-  clearNode(body);
-  body.append(container);
-  container.render();
-}
-
-function renderMainChatScreen() {}
 
 class MainScreen {
   constructor() {
@@ -124,7 +91,7 @@ class MainScreen {
         "bold"
     );
 
-    const roomInput = roomNameInput(); //todo
+    const roomInput = roomNameInput(stateChanger);
 
     clearNode(this.body);
     this.body.append(container);
@@ -151,11 +118,11 @@ class MainScreen {
         participants,
         "regular"
     );
-    const messageList = chatHistory(); //todo
-    const messageInput = chatMessageInput(); //todo
+    const messageList = chatHistory(currentState);
+    const messageInput = chatMessageInput(stateChanger);
 
-    const roomInput = roomNameInput(); //todo
-    const roomList = roomHistory(); //todo
+    const roomInput = roomNameInput(stateChanger);
+    const roomList = roomHistory(currentState, stateChanger);
 
     clearNode(this.body);
     this.body.append(container);
@@ -183,4 +150,4 @@ class MainScreen {
   }
 }
 
-export { MainScreen };
+export default MainScreen;

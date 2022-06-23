@@ -148,7 +148,26 @@ function userNameInput(value, isEnabled) {
   return container;
 }
 
-function roomNameInput() {}
+/**
+ * Creates the room name input abd button
+ * @param stateChanger {Function} The state altering function
+ * @returns {HTMLDivElement}
+ */
+function roomNameInput(stateChanger) {
+  const container = div("room-input");
+  const editor = textInput(
+    "Chat room name, e.g. general, D&D, star-wars",
+    false,
+    "room-input-name"
+  );
+  const goButton = button("GO", "room-input-button", () => {
+    stateChanger({ room: { id: 0, name: editor.value } });
+  });
+
+  container.append(editor, goButton);
+
+  return container;
+}
 
 /**
  * Creates a list of the rooms the user visited in this session with the option to change to one of those rooms
@@ -205,9 +224,24 @@ function chatMessage(text, author, isMine, isPending) {
   return message;
 }
 
+/**
+ * The message text editor
+ * @param stateChanger {Function} The function to alter the state of the app
+ * @returns {HTMLDivElement}
+ */
 function chatMessageInput(stateChanger) {
   const container = div("message-editor");
-  const editor = textInput("Your message goes here...", true, "message-text-editor");
+  const editor = textInput(
+    "Your message goes here...",
+    true,
+    "message-text-editor"
+  );
+  const saveButton = button("Send ", "message-send", () => {
+    stateChanger({ pendingText: editor.value, });
+  });
+
+  container.append(editor, saveButton);
+
   return container;
 }
 

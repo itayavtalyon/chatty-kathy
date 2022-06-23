@@ -10,4 +10,4 @@ import Server from "./server.js";
 
 const SOCKET_PORT = 3000;
 
-Server.boot(http, WebSocketServer, SOCKET_PORT);
+Server.boot(http, undefined, SOCKET_PORT);
