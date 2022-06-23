@@ -54,8 +54,12 @@ const kathy = {
       // Registering a new user
       kathy.handleUserIntroduction();
     }
-
-    if (currentState.room.id !== oldState.room.id) {
+    
+    if (
+      currentState.room.id !== oldState.room.id ||
+      (currentState.room.name.length > 0 &&
+        currentState.room.name !== oldState.room.name)
+    ) {
       // Enter a new room
       kathy.handleChangingRoom(currentState.room.name);
     }

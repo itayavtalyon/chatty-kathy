@@ -63,7 +63,7 @@ class Socket {
   handleRawMessage(event) {
     const rawMessage = event.data;
     const message = JSON.parse(rawMessage);
-    
+
     this.fireHookCallbacks(message);
   }
 

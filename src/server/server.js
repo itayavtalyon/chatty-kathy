@@ -235,7 +235,7 @@ const Server = {
         }
         if (0 < roomName.length) {
           if (!Server.rooms.has(roomName)) {
-            Server.rooms.add(roomName, new Room(roomName));
+            Server.rooms.set(roomName, new Room(roomName));
           }
 
           let room = Server.rooms.get(roomName);

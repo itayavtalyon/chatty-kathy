@@ -85,7 +85,7 @@ class MainScreen {
     const leftSide = div("column-left");
     const rightSide = div("column-right");
 
-    const title = header(1, "Waiting Room", "fancy");
+    const title = header(2, "Waiting Room", "fancy");
     const subtitle = paragraph(
         "👈 Please type a chat room name to get started",
         "bold"
@@ -105,7 +105,7 @@ class MainScreen {
     const leftSide = div("column-left");
     const rightSide = div("column-right");
 
-    const title = header(1, currentState.room.name, "fancy");
+    const title = header(2, currentState.room.name, "fancy");
     const participants = currentState.room.participants.reduce(
         (previous, current) => {
           if (previous.length > 0) {
