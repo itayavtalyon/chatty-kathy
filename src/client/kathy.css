@@ -1,7 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+
 body {
     align-items: center;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     height: 100vh;
+}
+
+.fancy {
+    font-family: 'Lobster', cursive;
+}
+
+h1.fancy {
+    font-size: 500%;
+}
+
+p.fancy {
+    font-size: xxx-large;
+}
+
+label.fancy {
+    font-size: xx-large;
+}
+
+input.fancy {
+    width: 90%;
+    border-radius: 1rem;
+    font-size: 2rem;
+    line-height: 3rem;
+    text-align: center;
+}
+
+button.big {
+    font-size: 2rem;
+    line-height: 3rem;
+    margin: 1rem;
+}
+
+p.spinner-reason {
+    font-size: 2rem;
+    text-align: center;
+}
+
+.wide {
+    display: flex;
+}
+
+.column-left {
+    width: 35%;
+}
+
+.column-right {
+    width: 65%;
+}
+
+.message-item {
+    border-radius: 0.5rem;
+    border: solid #ccc 0.25rem;
+    padding: 0.5rem;
+    margin: 0.5rem;
+    background-color: aliceblue;
+}
+
+.message-mine {
+    background-color: antiquewhite;
+}
+
+.message-pending {
+    background-color: dimgrey;
 }
